@@ -43,6 +43,11 @@ namespace UniGame.AssetBookmarks.Editor
         {
             drawer.AddBookmark(Selection.activeObject);
         }
-        
+
+        protected override void OnDestroy()
+        {
+            Selection.selectionChanged -= UpdateSelection;
+            base.OnDestroy();
+        }
     }
 }
