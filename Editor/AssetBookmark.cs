@@ -1,18 +1,25 @@
 ﻿namespace UniGame.AssetBookmarks.Editor
 {
     using System;
-    using Sirenix.OdinInspector;
     using Object = UnityEngine.Object;
 
+#if ODIN_INSPECTOR
+    using Sirenix.OdinInspector;
+#endif
+    
     [Serializable]
+#if ODIN_INSPECTOR
     [InlineProperty]
+#endif
     public class AssetBookmark
     {
+#if ODIN_INSPECTOR
         [HideLabel]
         [HorizontalGroup]
         [InlineButton(action:nameof(UpdatePinned),
             label:"",
             icon:SdfIconType.BookmarkCheck,ShowIf = nameof(_showPinned))]
+#endif
         public Object asset;
         
         private bool _pinned;

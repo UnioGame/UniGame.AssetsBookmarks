@@ -4,13 +4,16 @@
     using System.Collections.Generic;
     using Runtime.ObjectPool;
     using Runtime.ObjectPool.Extensions;
-    using Sirenix.OdinInspector;
-    using Sirenix.OdinInspector.Editor;
     using UniModules.Editor;
     using UnityEditor;
     using UnityEngine;
     using Object = UnityEngine.Object;
 
+#if ODIN_INSPECTOR
+    using Sirenix.OdinInspector;
+    using Sirenix.OdinInspector.Editor;
+#endif
+    
     [Serializable]
     public class AssetBookmarkDrawer
     {
@@ -19,24 +22,31 @@
         [HideInInspector]
         public AssetBookmarksData bookmarksData;
 
+#if ODIN_INSPECTOR
         [TabGroup("Bookmarks")]
         [ListDrawerSettings(HideAddButton = true, 
             ShowPaging = false,
             CustomRemoveIndexFunction = nameof(RemovePinned))]
         [ShowIf(nameof(HasPinned))]
+#endif
+
         public List<AssetBookmark> pinned = new();
         
+#if ODIN_INSPECTOR
         [TabGroup("Bookmarks")]
         [ListDrawerSettings(HideAddButton = true,
             ShowPaging = false,
             HideRemoveButton = true,
             ElementColor = nameof(GetElementColor))]
+#endif
         public List<AssetBookmark> bookmarks = new();
 
+#if ODIN_INSPECTOR
         [TabGroup("Settings")]
         [OnValueChanged(nameof(Save))]
         [InlineProperty]
         [HideLabel]
+#endif
         public AssetBookmarksSettings settings = new ();
         
         public bool HasPinned => pinned.Count > 0;
@@ -63,9 +73,11 @@
             UpdateBookmarks();
         }
 
+#if ODIN_INSPECTOR
         [ButtonGroup(GroupID = "Bookmarks")]
         [Button(Name = "",Icon = SdfIconType.Save)]
         [PropertyOrder(-1)]
+#endif
         public void Save()
         {
             if (bookmarksData == null) return;
@@ -73,9 +85,11 @@
             EditorPrefs.SetString(EditorPrefsKey, value);
         }
 
+#if ODIN_INSPECTOR
         [ButtonGroup(GroupID = "Bookmarks")]
         [Button(Name = "",Icon = SdfIconType.Trash)]
         [PropertyOrder(-1)]
+#endif
         public void Reset()
         {
             bookmarksData.pinned.Clear();

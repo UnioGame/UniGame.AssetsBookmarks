@@ -1,8 +1,13 @@
 namespace UniGame.AssetBookmarks.Editor
 {
+#if ODIN_INSPECTOR
     using Sirenix.OdinInspector;
     using Sirenix.OdinInspector.Editor;
+#endif
+    
     using UnityEditor;
+
+#if ODIN_INSPECTOR
 
     public class AssetBookmarksWindow : OdinEditorWindow
     {
@@ -50,4 +55,7 @@ namespace UniGame.AssetBookmarks.Editor
             base.OnDestroy();
         }
     }
+    
+#endif
+    
 }

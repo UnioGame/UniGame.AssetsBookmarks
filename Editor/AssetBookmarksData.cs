@@ -2,23 +2,32 @@
 {
     using System;
     using System.Collections.Generic;
-    using Sirenix.OdinInspector;
     using UnityEngine.Serialization;
 
+#if ODIN_INSPECTOR
+    using Sirenix.OdinInspector;
+#endif
+    
     [Serializable]
     public class AssetBookmarksData
     {
-        [FormerlySerializedAs("pinnedBookmarks")]
+#if ODIN_INSPECTOR
         [TabGroup("bookmarks")]
+#endif
+        [FormerlySerializedAs("pinnedBookmarks")]
         public List<string> pinned = new List<string>();
         
+#if ODIN_INSPECTOR
         [TabGroup("bookmarks")]
         [PropertySpace(8)]
+#endif
         public List<string> bookmarks = new List<string>();
         
+#if ODIN_INSPECTOR
         [TabGroup("settings")]
         [InlineProperty]
         [HideLabel]
+#endif
         public AssetBookmarksSettings settings = new AssetBookmarksSettings();
     }
 }
