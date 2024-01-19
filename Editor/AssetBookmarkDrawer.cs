@@ -121,9 +121,6 @@
             
             foreach (var pin in pinned)
                 GenericPool<AssetBookmark>.Release(pin);
-            
-            ListPool<AssetBookmark>.Release(bookmarks);
-            ListPool<AssetBookmark>.Release(pinned);
 
             bookmarks.Clear();
             pinned.Clear();
