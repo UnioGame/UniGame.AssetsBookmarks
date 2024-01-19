@@ -2,16 +2,13 @@
 {
     using System;
     using System.Collections.Generic;
-    using Runtime.ObjectPool;
-    using Runtime.ObjectPool.Extensions;
-    using UniModules.Editor;
     using UnityEditor;
     using UnityEngine;
+    using UnityEngine.Pool;
     using Object = UnityEngine.Object;
 
 #if ODIN_INSPECTOR
     using Sirenix.OdinInspector;
-    using Sirenix.OdinInspector.Editor;
 #endif
     
     [Serializable]
@@ -105,8 +102,9 @@
             if (string.IsNullOrEmpty(path)) return false;
             
             if (ignoreFolders && AssetDatabase.IsValidFolder(path)) return false;
+
+            var guid = AssetDatabase.AssetPathToGUID(path);
             
-            var guid = assetValue.GetGUID();
             if(string.IsNullOrEmpty(guid))return false;
             
             return AddBookmark(guid);
@@ -118,9 +116,18 @@
             
             settings = bookmarksData.settings;
 
-            bookmarks.DespawnItems();
-            pinned.DespawnItems();
+            foreach (var bookmark in bookmarks)
+                GenericPool<AssetBookmark>.Release(bookmark);
+            
+            foreach (var pin in pinned)
+                GenericPool<AssetBookmark>.Release(pin);
+            
+            ListPool<AssetBookmark>.Release(bookmarks);
+            ListPool<AssetBookmark>.Release(pinned);
 
+            bookmarks.Clear();
+            pinned.Clear();
+            
             foreach (var selection in bookmarksData.bookmarks)
             {
                 AddBookmarkView(selection,bookmarks);
@@ -147,7 +154,7 @@
             var assetValue = AssetDatabase.LoadAssetAtPath<Object>(path);
             if (assetValue == null) return null;
             
-            var view = ClassPool.Spawn<AssetBookmark>();
+            var view = GenericPool<AssetBookmark>.Get();
             view.Initialize(bookmarksData,assetValue,guid,UpdateBookmarks);
             view.asset = assetValue;
             return view;
